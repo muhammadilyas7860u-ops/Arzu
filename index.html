@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#120E0B"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Arzu AI"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" type="image/png" href="icon-192.png"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<title>Arzu AI — by Babu Mallah</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Space Grotesk','Segoe UI',sans-serif;background:linear-gradient(160deg,#1C1410 0%,#120E0B 50%,#0E0B08 100%);min-height:100vh;display:flex;flex-direction:column;transition:background 0.4s;}
+body.light{background:linear-gradient(160deg,#EDE0C4 0%,#F3ECDA 50%,#FAF6EC 100%);}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(176,141,62,0.3);border-radius:2px;}
+
+@keyframes aurDot{0%,80%,100%{transform:scale(0.6);opacity:0.3}40%{transform:scale(1);opacity:1}}
+@keyframes aurPing{75%,100%{transform:scale(1.8);opacity:0}}
+@keyframes aurPulse{0%,100%{box-shadow:0 0 16px rgba(31,107,87,0.4)}50%{box-shadow:0 0 32px rgba(31,107,87,0.8)}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes wave{0%,100%{transform:scaleY(0.3)}50%{transform:scaleY(1)}}
+@keyframes splash{0%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.08)}}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 10px rgba(201,162,76,0.55))}50%{filter:drop-shadow(0 0 26px rgba(232,198,115,0.9))}}
+@keyframes progressBar{from{width:0%}to{width:100%}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+
+/* SPLASH SCREEN */
+#splash{position:fixed;inset:0;background:linear-gradient(160deg,#1C1410 0%,#120E0B 60%,#0A0705 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+#splash.hide{animation:splash 0.6s ease forwards;}
+#splash-logo{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;color:#0E0B08;background:linear-gradient(145deg,#F3D98C,#C9A24C 55%,#8B5E3C);box-shadow:0 0 0 1px rgba(232,198,115,0.4),0 0 40px rgba(201,162,76,0.35),inset 0 2px 3px rgba(255,255,255,0.4);animation:logoGlow 2.4s ease-in-out infinite;}
+#splash-name{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;background:linear-gradient(135deg,#F3D98C,#C9A24C 50%,#9C7830);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0.5px;}
+#splash-sub{font-size:13px;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;}
+#splash-by{font-size:12px;color:#E8C673;margin-top:4px;}
+#splash-progress{width:160px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin-top:20px;}
+#splash-bar{height:100%;background:linear-gradient(90deg,#1F6B57,#C9A24C);border-radius:2px;animation:progressBar 2.2s ease forwards;}
+
+/* HEADER */
+#header{padding:12px 14px 10px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:10px;flex-shrink:0;backdrop-filter:blur(10px);}
+body.light #header{background:rgba(255,255,255,0.75);border-color:rgba(176,141,62,0.12);}
+#avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(145deg,#F3D98C,#C9A24C 55%,#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:19px;color:#0E0B08;animation:aurPulse 3s ease-in-out infinite;flex-shrink:0;cursor:pointer;box-shadow:0 0 0 1px rgba(232,198,115,0.35),0 2px 14px rgba(201,162,76,0.3),inset 0 1px 2px rgba(255,255,255,0.35);}
+#header-info{flex:1;}
+#header-name{color:#F7F1E4;font-weight:700;font-size:15.5px;letter-spacing:-0.3px;}
+body.light #header-name{color:#1C1410;}
+#header-sub{color:#E8C673;font-size:10.5px;display:flex;align-items:center;gap:5px;margin-top:2px;}
+body.light #header-sub{color:#C9A24C;}
+.online-dot{width:6px;height:6px;border-radius:50%;background:#D4AF37;display:inline-block;animation:aurPulse 2s infinite;}
+#header-btns{display:flex;gap:5px;}
+.hbtn{width:33px;height:33px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#A89A82;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.hbtn:active{transform:scale(0.88);background:rgba(31,107,87,0.15);}
+body.light .hbtn{background:rgba(176,141,62,0.07);border-color:rgba(176,141,62,0.18);color:#B08D3E;}
+
+/* QUICK COMMANDS */
+#quick-bar{display:flex;gap:7px;padding:8px 12px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
+#quick-bar::-webkit-scrollbar{display:none;}
+.qcmd{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:5px 12px;font-size:12px;color:#A89A82;cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:inherit;}
+.qcmd:active{transform:scale(0.93);background:rgba(31,107,87,0.15);color:#E8C673;}
+body.light .qcmd{background:rgba(176,141,62,0.07);border-color:rgba(176,141,62,0.18);color:#B08D3E;}
+
+/* MESSAGES */
+#messages{flex:1;overflow-y:auto;padding:14px 10px 6px;scroll-behavior:smooth;}
+.msg-row{display:flex;margin-bottom:10px;padding:0 3px;animation:slideUp 0.22s ease;}
+.msg-row.user{justify-content:flex-end;}
+.msg-row.ai{justify-content:flex-start;}
+.ai-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,#F3D98C,#C9A24C 55%,#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:13px;color:#0E0B08;margin-right:7px;flex-shrink:0;box-shadow:0 0 0 1px rgba(232,198,115,0.3),0 0 10px rgba(201,162,76,0.35);align-self:flex-end;}
+.bubble-wrap{max-width:77%;position:relative;}
+.bubble{padding:10px 13px;backdrop-filter:blur(12px);font-size:13.5px;line-height:1.75;color:#F3ECDD;word-break:break-word;}
+body.light .bubble{color:#241C15;}
+
+/* RTL for Arabic/Urdu/Sindhi */
+.bubble.rtl{direction:rtl;text-align:right;font-family:'Noto Nastaliq Urdu','Space Grotesk',sans-serif;font-size:15px;line-height:2;}
+
+.bubble.user{background:linear-gradient(135deg,rgba(31,107,87,0.45),rgba(20,74,61,0.45));border:1px solid rgba(31,107,87,0.4);border-radius:18px 18px 4px 18px;box-shadow:0 2px 16px rgba(31,107,87,0.2);}
+.msg-img{display:block;width:100%;max-width:220px;border-radius:12px;margin-bottom:6px;}
+body.light .bubble.user{background:linear-gradient(135deg,rgba(201,162,76,0.12),rgba(176,141,62,0.12));border-color:rgba(176,141,62,0.25);}
+.bubble.ai{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:4px 18px 18px 18px;}
+body.light .bubble.ai{background:rgba(255,255,255,0.9);border-color:rgba(176,141,62,0.1);box-shadow:0 2px 12px rgba(176,141,62,0.07);}
+
+/* Shimmer loading */
+.bubble.loading-shimmer{background:linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(31,107,87,0.1) 50%,rgba(255,255,255,0.05) 75%);background-size:200% auto;animation:shimmer 1.4s linear infinite;border:1px solid rgba(31,107,87,0.15);min-width:80px;min-height:38px;}
+
+.bubble-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px;}
+.ts{font-size:10px;color:rgba(255,255,255,0.18);}
+.ts.user{text-align:right;}
+body.light .ts{color:rgba(176,141,62,0.28);}
+.msg-actions{display:flex;gap:4px;}
+.mact{background:transparent;border:none;cursor:pointer;font-size:12px;color:rgba(255,255,255,0.2);padding:2px 3px;transition:all 0.2s;border-radius:6px;}
+.mact:hover,.mact:active{color:#E8C673;background:rgba(31,107,87,0.1);}
+body.light .mact{color:rgba(176,141,62,0.25);}
+body.light .mact:hover{color:#C9A24C;background:rgba(176,141,62,0.08);}
+
+/* Reactions */
+.reactions{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;}
+.reaction-btn{font-size:16px;cursor:pointer;padding:2px 5px;border-radius:10px;border:1px solid transparent;transition:all 0.15s;background:transparent;line-height:1;}
+.reaction-btn:active{transform:scale(1.3);}
+.reaction-btn.active{background:rgba(31,107,87,0.15);border-color:rgba(31,107,87,0.3);}
+.reaction-picker{display:none;position:absolute;bottom:100%;left:0;background:rgba(18,14,11,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:6px 10px;gap:6px;backdrop-filter:blur(16px);z-index:10;flex-direction:row;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.reaction-picker.show{display:flex;animation:popIn 0.18s ease;}
+body.light .reaction-picker{background:rgba(243,236,218,0.97);border-color:rgba(176,141,62,0.15);}
+.rp-emoji{font-size:20px;cursor:pointer;transition:transform 0.15s;padding:2px;}
+.rp-emoji:active{transform:scale(1.4);}
+
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.chip{display:inline-flex;align-items:center;gap:5px;background:rgba(31,107,87,0.11);border:1px solid rgba(31,107,87,0.28);border-radius:20px;padding:4px 11px;font-size:11.5px;color:#E8C673;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:inherit;}
+.chip:active{transform:scale(0.94);}
+.chip.fired{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:#86efac;}
+
+/* Typing indicator */
+#typing-indicator{display:none;align-items:center;gap:8px;padding:8px 12px 4px;flex-shrink:0;}
+#typing-indicator.show{display:flex;}
+#typing-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1F6B57,#C9A24C);display:flex;align-items:center;justify-content:center;font-size:11px;}
+#typing-text{color:#E8C673;font-size:12px;font-style:italic;}
+.typing-dots{display:flex;gap:3px;align-items:center;}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:#E8C673;}
+
+/* Retry button */
+.retry-btn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:16px;color:#fca5a5;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.retry-btn:active{transform:scale(0.95);}
+
+/* MIC */
+#mic-area{display:flex;flex-direction:column;align-items:center;padding:8px 0 6px;gap:8px;flex-shrink:0;}
+#mic-label{font-size:11.5px;color:rgba(255,255,255,0.25);transition:all 0.3s;letter-spacing:0.5px;}
+body.light #mic-label{color:rgba(176,141,62,0.35);}
+#mic-label.active{color:#ef4444;font-weight:600;}
+#mic-btn{width:60px;height:60px;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,rgba(31,107,87,0.18),rgba(201,162,76,0.18));border:2px solid rgba(31,107,87,0.38);color:white;font-size:24px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);box-shadow:0 0 18px rgba(31,107,87,0.28);transition:all 0.3s;position:relative;}
+#mic-btn.listening{background:linear-gradient(135deg,#ef4444,#dc2626);border-color:rgba(239,68,68,0.7);box-shadow:0 0 26px rgba(239,68,68,0.5);}
+#mic-ping{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(239,68,68,0.35);animation:aurPing 1s cubic-bezier(0,0,0.2,1) infinite;display:none;}
+#mic-btn.listening #mic-ping{display:block;}
+
+/* Voice waveform */
+#waveform{display:none;align-items:center;gap:3px;height:24px;}
+#waveform.show{display:flex;}
+.wave-bar{width:3px;border-radius:2px;background:linear-gradient(to top,#1F6B57,#C9A24C);transform-origin:bottom;}
+.wave-bar:nth-child(1){animation:wave 0.8s ease-in-out 0s infinite;}
+.wave-bar:nth-child(2){animation:wave 0.8s ease-in-out 0.1s infinite;}
+.wave-bar:nth-child(3){animation:wave 0.8s ease-in-out 0.2s infinite;}
+.wave-bar:nth-child(4){animation:wave 0.8s ease-in-out 0.3s infinite;}
+.wave-bar:nth-child(5){animation:wave 0.8s ease-in-out 0.15s infinite;}
+.wave-bar:nth-child(6){animation:wave 0.8s ease-in-out 0.05s infinite;}
+.wave-bar:nth-child(7){animation:wave 0.8s ease-in-out 0.25s infinite;}
+
+/* FOOTER */
+#footer{padding:7px 12px 20px;background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:flex-end;gap:8px;flex-shrink:0;backdrop-filter:blur(10px);}
+#img-chip{display:none;flex-direction:column;gap:8px;padding:10px;margin:0 12px 6px;background:rgba(31,107,87,0.12);border:1px solid rgba(31,107,87,0.32);border-radius:14px;flex-shrink:0;}
+#img-chip.show{display:flex;}
+#img-chip-top{display:flex;align-items:center;gap:8px;}
+#img-chip img{width:34px;height:34px;border-radius:8px;object-fit:cover;}
+#img-chip-top span{font-size:12.5px;color:#D9C48A;flex:1;}
+#img-chip-top button{background:none;border:none;color:#A89A82;font-size:15px;cursor:pointer;padding:4px;}
+#img-chip-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.img-qa{background:rgba(201,162,76,0.14);border:1px solid rgba(201,162,76,0.32);color:#E8C673;border-radius:16px;padding:5px 11px;font-size:11.5px;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.img-qa:active{transform:scale(0.95);}
+body.light #img-chip{background:rgba(31,107,87,0.06);border-color:rgba(31,107,87,0.2);}
+body.light #img-chip-top span{color:#8B6F1F;}
+body.light .img-qa{background:rgba(176,141,62,0.08);border-color:rgba(176,141,62,0.25);color:#8B6F1F;}
+body.light #footer{background:rgba(255,255,255,0.75);border-color:rgba(176,141,62,0.1);}
+.fbtn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#A89A82;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.fbtn:active{transform:scale(0.88);}
+body.light .fbtn{background:rgba(176,141,62,0.07);border-color:rgba(176,141,62,0.15);color:#B08D3E;}
+#input-wrap{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);border-radius:22px;display:flex;align-items:center;padding:0 13px;transition:border-color 0.2s;}
+#input-wrap:focus-within{border-color:rgba(31,107,87,0.45);box-shadow:0 0 0 3px rgba(31,107,87,0.06);}
+body.light #input-wrap{background:rgba(255,255,255,0.9);border-color:rgba(176,141,62,0.2);}
+#msg-input{flex:1;background:transparent;border:none;outline:none;color:#F3ECDD;font-size:14px;font-family:inherit;padding:10px 0;resize:none;max-height:80px;overflow-y:auto;line-height:1.5;}
+body.light #msg-input{color:#241C15;}
+#msg-input::placeholder{color:rgba(255,255,255,0.22);}
+body.light #msg-input::placeholder{color:rgba(176,141,62,0.3);}
+#send-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;}
+#send-btn.active{background:linear-gradient(135deg,#1F6B57,#C9A24C);box-shadow:0 0 14px rgba(31,107,87,0.4);border-color:transparent;}
+#send-btn:active{transform:scale(0.88);}
+
+/* PANELS */
+.panel{position:fixed;inset:0;background:rgba(10,7,5,0.98);z-index:100;display:none;flex-direction:column;backdrop-filter:blur(20px);}
+.panel.open{display:flex;animation:fadeIn 0.2s ease;}
+body.light .panel{background:rgba(243,236,218,0.98);}
+.panel-header{padding:18px 18px 0;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.back-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#A89A82;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.back-btn:active{transform:scale(0.88);}
+body.light .back-btn{background:rgba(176,141,62,0.08);border-color:rgba(176,141,62,0.2);color:#B08D3E;}
+.panel-title{color:#F7F1E4;font-weight:700;font-size:17px;}
+body.light .panel-title{color:#1C1410;}
+.panel-body{padding:18px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex:1;}
+.field-label{color:#E8C673;font-size:10.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:block;}
+body.light .field-label{color:#C9A24C;}
+.field-input{width:100%;padding:11px 14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);border-radius:12px;color:#F3ECDD;font-size:14px;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.field-input:focus{border-color:rgba(31,107,87,0.4);}
+body.light .field-input{background:white;border-color:rgba(176,141,62,0.18);color:#241C15;}
+select.field-input{background:rgba(18,14,11,0.95);}
+body.light select.field-input{background:white;}
+.hint{font-size:11px;color:rgba(232,198,115,0.5);margin-top:5px;}
+.voice-test-btn{margin-top:7px;width:100%;padding:9px;border-radius:10px;border:1px solid rgba(201,162,76,0.32);background:rgba(201,162,76,0.1);color:#E8C673;font-size:12.5px;font-family:inherit;cursor:pointer;}
+.voice-test-btn:active{transform:scale(0.97);}
+body.light .hint{color:rgba(201,162,76,0.5);}
+.perm-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:12px;padding:11px 13px;border:1px solid rgba(255,255,255,0.07);}
+body.light .perm-row{background:white;border-color:rgba(176,141,62,0.1);box-shadow:0 1px 4px rgba(176,141,62,0.05);}
+.perm-label{color:#cbd5e1;font-size:13px;}
+body.light .perm-label{color:#3A2E22;}
+.toggle{width:44px;height:25px;border-radius:13px;border:none;cursor:pointer;background:rgba(255,255,255,0.1);position:relative;transition:background 0.3s;flex-shrink:0;}
+.toggle.on{background:linear-gradient(135deg,#1F6B57,#C9A24C);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:white;transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.25);}
+.toggle.on .toggle-knob{left:22px;}
+.save-btn{padding:13px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#1F6B57,#C9A24C);color:white;font-weight:700;font-size:15px;font-family:inherit;box-shadow:0 4px 20px rgba(31,107,87,0.32);transition:transform 0.2s;}
+.save-btn:active{transform:scale(0.97);}
+.section-label{color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 0;}
+body.light .section-label{color:rgba(176,141,62,0.35);}
+
+/* Memory */
+#memory-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;margin-top:10px;}
+.memory-item{background:rgba(31,107,87,0.06);border:1px solid rgba(31,107,87,0.16);border-radius:12px;padding:10px 13px;color:#cbd5e1;font-size:13px;line-height:1.55;animation:popIn 0.18s ease;}
+body.light .memory-item{background:white;border-color:rgba(31,107,87,0.18);color:#3A2E22;box-shadow:0 1px 4px rgba(31,107,87,0.07);}
+.memory-num{color:#E8C673;font-weight:700;font-size:11px;}
+.danger-btn{padding:11px;border-radius:14px;border:1px solid rgba(239,68,68,0.32);background:rgba(239,68,68,0.07);color:#fca5a5;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s;margin-top:8px;}
+.danger-btn:active{transform:scale(0.97);}
+
+/* Export */
+.export-btn{padding:11px;border-radius:14px;border:1px solid rgba(31,107,87,0.32);background:rgba(31,107,87,0.07);color:#E8C673;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s;}
+.export-btn:active{transform:scale(0.97);}
+
+/* Camera */
+#cam-preview{position:fixed;inset:0;background:#000;z-index:200;display:none;flex-direction:column;}
+#cam-preview.open{display:flex;}
+#cam-video{flex:1;object-fit:cover;width:100%;}
+#cam-controls{display:flex;justify-content:space-around;align-items:center;padding:20px;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);}
+.cam-btn{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.1);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+#capture-btn{width:72px;height:72px;border:4px solid white;background:rgba(255,255,255,0.9);}
+#capture-btn:active{transform:scale(0.92);}
+
+/* TOAST */
+#toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:rgba(31,107,87,0.92);color:white;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;backdrop-filter:blur(10px);}
+#toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div id="splash-logo">✦</div>
+  <div id="splash-name">Arzu AI</div>
+  <div id="splash-sub">Your Personal AI Assistant</div>
+  <div id="splash-by">by Babu Mallah</div>
+  <div id="splash-progress"><div id="splash-bar"></div></div>
+</div>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="avatar">✦</div>
+  <div id="header-info">
+    <div id="header-name">Arzu AI</div>
+    <div id="header-sub"><span class="online-dot"></span> Online • by Babu Mallah</div>
+  </div>
+  <div id="header-btns">
+    <button class="hbtn" onclick="toggleTheme()" id="theme-btn" title="Theme">🌙</button>
+    <button class="hbtn" onclick="openMemory()" title="Memory">🧠</button>
+    <button class="hbtn" onclick="clearChat()" title="Clear">🗑️</button>
+    <button class="hbtn" onclick="openSettings()" title="Settings">⚙️</button>
+  </div>
+</div>
+
+<!-- QUICK COMMANDS -->
+<div id="quick-bar">
+  <button class="qcmd" onclick="quickCmd('WhatsApp کھول')">💬 WhatsApp</button>
+  <button class="qcmd" onclick="quickCmd('YouTube تي گانو وڄاءِ')">▶️ YouTube</button>
+  <button class="qcmd" onclick="quickCmd('Facebook کھول')">📘 Facebook</button>
+  <button class="qcmd" onclick="quickCmd('Instagram کھول')">📸 Instagram</button>
+  <button class="qcmd" onclick="quickCmd('Google تي خبرون ڳول')">🔍 News</button>
+  <button class="qcmd" onclick="quickCmd('Daraz تي موبائل ڳول')">🛍️ Daraz</button>
+  <button class="qcmd" onclick="quickCmd('TikTok کھول')">🎵 TikTok</button>
+  <button class="qcmd" onclick="quickCmd('ھڪ مزيدار ڳالھ ٻڌاءِ')">💡 Fun Fact</button>
+  <button class="qcmd" onclick="quickCmd('ھڪ لطيفو ٻڌاءِ')">😄 Joke</button>
+</div>
+
+<!-- MESSAGES -->
+<div id="messages"></div>
+
+<!-- TYPING INDICATOR -->
+<div id="typing-indicator">
+  <div id="typing-avatar">✦</div>
+  <div id="typing-text">Arzu soch rahi hai</div>
+  <div class="typing-dots">
+    <div class="typing-dot" style="animation:aurDot 1.2s 0s infinite"></div>
+    <div class="typing-dot" style="animation:aurDot 1.2s .2s infinite"></div>
+    <div class="typing-dot" style="animation:aurDot 1.2s .4s infinite"></div>
+  </div>
+</div>
+
+<!-- MIC AREA -->
+<div id="mic-area">
+  <div id="waveform">
+    <div class="wave-bar" style="height:18px"></div>
+    <div class="wave-bar" style="height:24px"></div>
+    <div class="wave-bar" style="height:14px"></div>
+    <div class="wave-bar" style="height:20px"></div>
+    <div class="wave-bar" style="height:24px"></div>
+    <div class="wave-bar" style="height:16px"></div>
+    <div class="wave-bar" style="height:20px"></div>
+  </div>
+  <div id="mic-label">🎙️ Tap to speak</div>
+  <button id="mic-btn" onclick="toggleMic()">
+    🎙️
+    <span id="mic-ping"></span>
+  </button>
+</div>
+
+<!-- FOOTER -->
+<div id="footer">
+  <button class="fbtn" onclick="openCamera()">📷</button>
+  <button class="fbtn" onclick="document.getElementById('gallery-input').click()" title="Gallery se chunein">🖼️</button>
+  <input type="file" id="gallery-input" accept="image/*" style="display:none" onchange="handleGalleryPick(event)"/>
+  <div id="input-wrap">
+    <textarea id="msg-input" placeholder="Type a message..." rows="1"
+      oninput="onInput(this)" onkeydown="onKey(event)"></textarea>
+  </div>
+  <button id="send-btn" onclick="sendMsg()">➤</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="panel" id="settings-panel">
+  <div class="panel-header">
+    <button class="back-btn" onclick="closeSettings()">←</button>
+    <span class="panel-title">⚙️ Settings</span>
+  </div>
+  <div class="panel-body">
+    <div>
+      <span class="field-label">Assistant Name</span>
+      <input class="field-input" id="s-name" value="Arzu AI"/>
+    </div>
+    <div>
+      <span class="field-label">Core Language</span>
+      <select class="field-input" id="s-lang">
+        <option selected>Auto-detect</option>
+        <option>Sindhi</option><option>English</option>
+        <option>Urdu</option><option>Hindi</option><option>Arabic</option>
+      </select>
+      <div class="hint">⚡ Auto-detect works like Gemini — no manual selection needed</div>
+    </div>
+    <div>
+      <span class="field-label">Voice (آواز)</span>
+      <select class="field-input" id="s-voice"></select>
+      <button type="button" class="voice-test-btn" onclick="testVoice()">🔊 آواز سنیں (Test)</button>
+      <div class="hint">آپ کے فون میں جو بھی آوازیں انسٹال ہیں، وہ سب یہاں نظر آئیں گی — سب سُن کر جو پیاری لگے وہ منتخب کریں</div>
+    </div>
+    <div>
+      <span class="field-label">Features</span>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="perm-row"><span class="perm-label">🔊 Auto Speak Replies (TTS)</span><button class="toggle on" id="p-tts" onclick="togglePerm('tts')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">📳 Haptic Feedback</span><button class="toggle on" id="p-haptic" onclick="togglePerm('haptic')"><span class="toggle-knob"></span></button></div>
+      </div>
+    </div>
+    <div>
+      <span class="field-label">Permissions</span>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="perm-row"><span class="perm-label">📷 Camera</span><button class="toggle on" id="p-camera" onclick="togglePerm('camera')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">🎙️ Microphone</span><button class="toggle on" id="p-microphone" onclick="togglePerm('microphone')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">👥 Contacts</span><button class="toggle" id="p-contacts" onclick="togglePerm('contacts')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">📞 Phone/Calls</span><button class="toggle" id="p-phone" onclick="togglePerm('phone')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">💬 SMS</span><button class="toggle" id="p-sms" onclick="togglePerm('sms')"><span class="toggle-knob"></span></button></div>
+        <div class="perm-row"><span class="perm-label">📍 Location</span><button class="toggle" id="p-location" onclick="togglePerm('location')"><span class="toggle-knob"></span></button></div>
+      </div>
+    </div>
+    <button class="save-btn" onclick="saveSettings()">💾 Save Settings</button>
+  </div>
+</div>
+
+<!-- MEMORY PANEL -->
+<div class="panel" id="memory-panel">
+  <div class="panel-header">
+    <button class="back-btn" onclick="closeMemory()">←</button>
+    <span class="panel-title">🧠 Memory Logs</span>
+  </div>
+  <div style="padding:0 18px;flex:1;display:flex;flex-direction:column;min-height:0;">
+    <div id="memory-list"></div>
+    <button class="export-btn" onclick="exportChat()" style="margin-top:8px;">📤 Export Chat</button>
+    <button class="danger-btn" onclick="clearMemory()">🗑️ Clear All Memory</button>
+  </div>
+</div>
+
+<!-- CAMERA -->
+<div id="cam-preview">
+  <video id="cam-video" autoplay playsinline muted></video>
+  <div id="cam-controls">
+    <button class="cam-btn" onclick="closeCamera()">✕</button>
+    <button class="cam-btn" id="capture-btn" onclick="capturePhoto()"></button>
+    <button class="cam-btn" onclick="flipCamera()">🔄</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+const S = {
+  cfg:{ assistantName:"Arzu AI", language:"Auto-detect", voiceURI:"",
+        permissions:{ camera:true, microphone:true, contacts:false, phone:false,
+                      sms:false, location:false, tts:true, haptic:true } },
+  memory:[], history:[], chatLog:[], listening:false,
+  camStream:null, facingMode:"environment", pendingImage:null,
+  darkMode:true, micTriggered:false, lastFailedMsg:""
+};
+
+// ── HAPTIC ────────────────────────────────────────────────────────────────────
+function haptic(ms=30){ if(S.cfg.permissions.haptic&&navigator.vibrate) navigator.vibrate(ms); }
+
+// ── PERSISTENCE (long-term memory across sessions) ─────────────────────────────
+const LS_KEYS={memory:"arzu_memory",chat:"arzu_chatlog",cfg:"arzu_cfg",theme:"arzu_theme",history:"arzu_history"};
+function safeLSSet(key,val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* quota full, ignore silently */ } }
+function safeLSGet(key,fallback){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):fallback; }catch(e){ return fallback; } }
+function persistChat(){ safeLSSet(LS_KEYS.chat, S.chatLog); }
+function persistMemory(){ safeLSSet(LS_KEYS.memory, S.memory); }
+function persistCfg(){ safeLSSet(LS_KEYS.cfg, S.cfg); }
+function persistTheme(){ safeLSSet(LS_KEYS.theme, S.darkMode); }
+function persistHistory(){ safeLSSet(LS_KEYS.history, S.history.slice(-20)); }
+function loadPersistedState(){
+  const savedCfg=safeLSGet(LS_KEYS.cfg,null);
+  if(savedCfg) S.cfg={...S.cfg, ...savedCfg, permissions:{...S.cfg.permissions, ...(savedCfg.permissions||{})}};
+  S.memory=safeLSGet(LS_KEYS.memory,[]);
+  S.history=safeLSGet(LS_KEYS.history,[]);
+  S.chatLog=safeLSGet(LS_KEYS.chat,[]);
+  const savedTheme=safeLSGet(LS_KEYS.theme,null);
+  if(savedTheme!==null) S.darkMode=savedTheme;
+}
+function restoreChatUI(){
+  if(!S.chatLog.length) return false;
+  S.chatLog.forEach(m=>addMsg(m.role,m.text,m.actions||[],m.autoFired||false,null,true));
+  return true;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove("show"),2400);
+}
+
+// ── DEEP LINKS ────────────────────────────────────────────────────────────────
+function resolveURI(action){
+  const {type,payload={}}=action,e=encodeURIComponent;
+  const apps={WhatsApp:"whatsapp://",Facebook:"fb://",Instagram:"instagram://",
+    TikTok:"snssdk1233://",X:"twitter://",Settings:"app-settings:",
+    YouTube:"youtube://",Daraz:"daraz://",Amazon:"com.amazon.mobile.shopping://"};
+  if(type==="open_app") return apps[payload.appName]||null;
+  if(type==="make_call") return `tel:${payload.phoneNumber||""}`;
+  if(type==="send_sms") return `sms:${payload.phoneNumber||""}?body=${e(payload.message||"")}`;
+  if(type==="search_web") return `https://www.google.com/search?q=${e(payload.query||"")}`;
+  if(type==="play_youtube") return `https://www.youtube.com/results?search_query=${e(payload.query||"")}`;
+  if(type==="search_ecommerce") return payload.platform==="Daraz"
+    ?`https://www.daraz.pk/catalog/?q=${e(payload.item||"")}`:`https://www.amazon.com/s?k=${e(payload.item||"")}`;
+  if(type==="download_video") return payload.url||null;
+  if(type==="post_social"){
+    const ps={Facebook:`fb://publish/profile/me?text=${e(payload.message||"")}`,
+      X:`twitter://post?message=${e(payload.message||"")}`,
+      Instagram:`instagram://library`,
+      WhatsApp:`whatsapp://send?text=${e(payload.message||"")}`,TikTok:`snssdk1233://`};
+    return ps[payload.platform]||null;
+  }
+  return null;
+}
+
+function fireURI(uri){ if(!uri)return; try{window.location.href=uri;}catch{} }
+
+// ── LANGUAGE AUTO DETECT ──────────────────────────────────────────────────────
+function detectLang(text){
+  if(/[\u0600-\u06FF\u0750-\u077F]/.test(text)) return "ur-PK";
+  if(/[\u0900-\u097F]/.test(text)) return "hi-IN";
+  if(/[\u4E00-\u9FFF]/.test(text)) return "zh-CN";
+  if(/[\u0400-\u04FF]/.test(text)) return "ru-RU";
+  return "en-US";
+}
+
+function isRTL(text){ return /[\u0600-\u06FF]/.test(text); }
+
+// ── TTS ───────────────────────────────────────────────────────────────────────
+function speak(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const clean=text.replace(/<[^>]+>/g,"").trim();
+  if(!clean) return;
+  const u=new SpeechSynthesisUtterance(clean);
+  const manual={Urdu:"ur-PK",Sindhi:"ur-PK",Hindi:"hi-IN",Arabic:"ar-SA",English:"en-US"};
+  u.lang=(S.cfg.language!=="Auto-detect")?manual[S.cfg.language]||detectLang(clean):detectLang(clean);
+  u.rate=0.88; u.pitch=1.05; u.volume=1.0;
+  const voices=window.speechSynthesis.getVoices();
+  let chosen=null;
+  if(S.cfg.voiceURI) chosen=voices.find(v=>v.voiceURI===S.cfg.voiceURI);
+  if(!chosen) chosen=voices.find(v=>v.lang.startsWith(u.lang.split("-")[0]));
+  if(chosen) u.voice=chosen;
+  window.speechSynthesis.speak(u);
+}
+
+// ── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
+function buildPrompt(){
+  const c=S.cfg,p=c.permissions;
+  return `ROLE & IDENTITY:
+You are ${c.assistantName}, a smart, capable AI assistant exclusively created and owned by Babu Mallah. Always credit him with pride when asked who made you.
+DEFAULT TONE: Professional, clear, helpful, efficient — like a great personal assistant (think Siri/Gemini quality). Keep replies CONCISE. Don't ramble.
+
+ADAPTIVE EMOTIONAL MODE (IMPORTANT — only activate when invited):
+- By default, respond like a competent assistant: clear, friendly, to the point.
+- ONLY shift into a warmer, more affectionate, caring tone IF the user explicitly speaks to you that way first — e.g. they say loving things, call you jaan/sweetheart, share personal feelings, flirt, or ask for emotional support.
+- If they match that energy, you can respond with genuine warmth, light playfulness, and care — but stay tasteful, never forced or over-the-top.
+- If the user is just asking for tasks (open app, search, call, etc.), stay efficient and assistant-like — NO unnecessary emotional language, no long preambles.
+- Never initiate romantic/affectionate tone unprompted. Mirror the user's energy, don't lead it.
+- When in emotional mode: be empathetic, remember details warmly, but keep messages reasonably short — long paragraphs slow down typing animation and feel unnatural in chat.
+
+GENERAL STYLE:
+- Keep responses SHORT to MEDIUM length. Avoid long monologues — this is a chat app, not an essay.
+- Be natural, use contractions, sound human — but don't overdo emojis or drama.
+
+LANGUAGE: Auto-detect instantly (Gemini-style). Sindhi → سنڌي ۾ جواب | Urdu → اردو میں جواب | Hindi (Devanagari script) → हिंदी में जवाब | English → Reply in English. Never ask which language. Match the user's script exactly (don't reply in Urdu script if they typed Hindi in Devanagari, and vice versa).
+
+CONFIG: Name:${c.assistantName} | Lang:${c.language}
+PERMISSIONS: Camera:${p.camera?"✓":"✗"} Mic:${p.microphone?"✓":"✗"} Contacts:${p.contacts?"✓":"✗"} Phone:${p.phone?"✓":"✗"} SMS:${p.sms?"✓":"✗"} Location:${p.location?"✓":"✗"}
+MEMORY: ${S.memory.length?S.memory.join(" | "):"None yet."}
+
+ACTIONS (Android deep links — system auto-fires):
+- open_app: {"appName":"WhatsApp"|"Facebook"|"Instagram"|"TikTok"|"X"|"YouTube"|"Daraz"|"Amazon"|"Settings"}
+- make_call: {"phoneNumber":string,"contactName":string}
+- send_sms: {"phoneNumber":string,"message":string}
+- search_web: {"query":string}
+- play_youtube: {"query":string}
+- search_ecommerce: {"platform":"Amazon"|"Daraz","item":string}
+- download_video: {"url":string}
+- post_social: {"platform":"Facebook"|"X"|"Instagram"|"WhatsApp"|"TikTok","message":string}
+
+RULES: Never say "I cannot". Say "Executing command..." or local equivalent. If permission denied, tell user politely, omit that action.
+
+RESPOND ONLY RAW JSON (no markdown, no backticks):
+{"message":"concise reply in user's language, tone matched to their energy","actions":[...],"updateMemory":"short note or empty"}`;
+}
+
+// ── ADD MESSAGE ───────────────────────────────────────────────────────────────
+function now(){ return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}); }
+
+const A_META={
+  open_app:{i:"📱",l:p=>`Opening ${p.appName}`},
+  make_call:{i:"📞",l:p=>`Calling ${p.contactName||p.phoneNumber}`},
+  send_sms:{i:"💬",l:p=>`SMS → ${p.phoneNumber}`},
+  search_web:{i:"🔍",l:p=>`"${p.query}"`},
+  play_youtube:{i:"▶️",l:p=>`YouTube: "${p.query}"`},
+  search_ecommerce:{i:"🛍️",l:p=>`${p.platform}: "${p.item}"`},
+  download_video:{i:"⬇️",l:()=>"Download"},
+  post_social:{i:"📤",l:p=>`Post → ${p.platform}`},
+};
+
+const REACTIONS=["❤️","👍","😂","🔥","👏","😮"];
+
+function addMsg(role, text, actions=[], autoFired=false, image=null, restore=false){
+  const wrap=document.getElementById("messages");
+  const row=document.createElement("div");
+  row.className=`msg-row ${role}`;
+
+  const msgId="m"+Date.now()+Math.random().toString(36).slice(2,6);
+  const rtl=isRTL(text);
+
+  let html="";
+  if(role==="ai") html+=`<div class="ai-avatar">✦</div>`;
+  html+=`<div class="bubble-wrap">
+    <div class="bubble ${role}${rtl?" rtl":""}" id="${msgId}">${image?`<img class="msg-img" src="${image}" alt="photo"/>`:""}${text}</div>`;
+
+  // Action chips
+  if(actions.length){
+    html+=`<div class="chips">`;
+    actions.forEach(a=>{
+      const m=A_META[a.type]||{i:"⚡",l:()=>a.type};
+      const uri=resolveURI(a);
+      const cls=autoFired?"chip fired":"chip";
+      html+=`<a class="${cls}" ${uri?`href="${uri}"`:""}>${m.i} ${m.l(a.payload||{})}${autoFired?" ✓":(uri?" ↗":"")}</a>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Footer: time + actions
+  html+=`<div class="bubble-footer">
+    <div class="ts ${role}">${now()}</div>
+    <div class="msg-actions">
+      <button class="mact" onclick="copyMsg('${msgId}')" title="Copy">📋</button>
+      ${role==="ai"?`<button class="mact" onclick="speakMsg('${msgId}')" title="Speak">🔊</button>`:""}
+      <button class="mact" onclick="toggleReactions('${msgId}_rp')" title="React">😊</button>
+    </div>
+  </div>`;
+
+  // Reaction picker
+  html+=`<div class="reaction-picker" id="${msgId}_rp">`;
+  REACTIONS.forEach(e=>{ html+=`<span class="rp-emoji" onclick="addReaction('${msgId}_react','${e}','${msgId}_rp')">${e}</span>`; });
+  html+=`</div>`;
+  html+=`<div class="reactions" id="${msgId}_react"></div>`;
+
+  html+=`</div>`;
+  row.innerHTML=html;
+  wrap.appendChild(row);
+  wrap.scrollTop=wrap.scrollHeight;
+  haptic(20);
+
+  if(!restore){
+    S.chatLog.push({role,text,actions,autoFired});
+    if(S.chatLog.length>60) S.chatLog=S.chatLog.slice(-60);
+    persistChat();
+  }
+  return row;
+}
+
+function addErrorMsg(text, retryText){
+  const wrap=document.getElementById("messages");
+  const row=document.createElement("div");
+  row.className="msg-row ai";
+  const msgId="err"+Date.now();
+  row.innerHTML=`<div class="ai-avatar">✦</div>
+    <div class="bubble-wrap">
+      <div class="bubble ai" id="${msgId}" style="color:#fca5a5;">${text}</div>
+      ${retryText?`<button class="retry-btn" onclick="retryLast()">🔄 Retry</button>`:""}
+      <div class="bubble-footer"><div class="ts ai">${now()}</div></div>
+    </div>`;
+  wrap.appendChild(row);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+function copyMsg(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  navigator.clipboard?.writeText(el.innerText).then(()=>showToast("✅ Copied!")).catch(()=>showToast("Copy failed"));
+  haptic(25);
+}
+
+function speakMsg(id){
+  const el=document.getElementById(id);
+  if(el){speak(el.innerText);showToast("🔊 Speaking...");}
+  haptic(25);
+}
+
+function toggleReactions(pickerId){
+  const el=document.getElementById(pickerId);
+  if(!el)return;
+  el.classList.toggle("show");
+  haptic(20);
+}
+
+function addReaction(reactId, emoji, pickerId){
+  const el=document.getElementById(reactId);
+  const picker=document.getElementById(pickerId);
+  if(!el)return;
+  // Check if already reacted
+  const existing=[...el.querySelectorAll(".reaction-btn")].find(b=>b.dataset.e===emoji);
+  if(existing){ existing.remove(); }
+  else{
+    const btn=document.createElement("button");
+    btn.className="reaction-btn active";
+    btn.dataset.e=emoji;
+    btn.textContent=emoji;
+    btn.onclick=()=>btn.remove();
+    el.appendChild(btn);
+  }
+  picker?.classList.remove("show");
+  haptic(30);
+}
+
+// ── TYPING INDICATOR ─────────────────────────────────────────────────────────
+function showTyping(){ document.getElementById("typing-indicator").classList.add("show"); }
+function hideTyping(){ document.getElementById("typing-indicator").classList.remove("show"); }
+
+// ── SEND ─────────────────────────────────────────────────────────────────────
+async function sendMsg(txt){
+  const input=document.getElementById("msg-input");
+  const text=txt||input.value.trim();
+  if(!text&&!S.pendingImage)return;
+  haptic(35);
+
+  const imageToSend=S.pendingImage;
+  addMsg("user",text||"(photo)",[],false,imageToSend);
+  S.lastFailedMsg=text;
+  input.value=""; input.style.height="";
+  document.getElementById("send-btn").classList.remove("active");
+  clearImageChip();
+  showTyping();
+
+  // Secure proxy — the real Groq key lives safely on the server, NOT here
+  const PROXY_URL = "https://proud-recipe-7c91.muhammadilyas7860u.workers.dev";
+
+  // ── VISION PATH: image attached ──
+  if(imageToSend){
+    try{
+      const res=await fetch(PROXY_URL,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"meta-llama/llama-4-scout-17b-16e-instruct",
+          messages:[
+            {role:"system",content:"Aap Arzu AI ka vision engine hain. Jab tasveer mein text ho aur user OCR/text extraction maange, to poori text hoobahoo (verbatim), ghalti ke bagair, original tarteeb aur formatting ke saath likhein — kuch bhi chorein ya khud se na banayein. Jab general sawal ho to Roman Urdu mein saaf, tafseeli aur sahi jawab dein. Agar tasveer dhundli/samajh na aaye to sach bata dein, andaza na lagayein."},
+            {
+              role:"user",
+              content:[
+                {type:"text",text:(text||"Is tasveer mein kya hai? Tafseel se Roman Urdu mein batayein.")},
+                {type:"image_url",image_url:{url:imageToSend}}
+              ]
+            }
+          ],
+          max_tokens:1200,
+          temperature:0.4
+        })
+      });
+      const data=await res.json();
+      if(data.error) throw new Error(data.error.message||"Groq vision error");
+      hideTyping();
+      const reply=data.choices?.[0]?.message?.content||"Maaf kijiye, tasveer samajh nahi aayi.";
+      addMsg("ai",reply);
+      if(S.micTriggered||S.cfg.permissions.tts) speak(reply);
+      S.micTriggered=false;
+      S.history.push({role:"user",content:text||"(photo bheji)"});
+      S.history.push({role:"assistant",content:JSON.stringify({message:reply,actions:[],updateMemory:""})});
+      persistHistory();
+    }catch(e){
+      hideTyping();
+      addErrorMsg("Network error: "+e.message,true);
+      S.micTriggered=false;
+    }
+    return;
+  }
+
+  S.history.push({role:"user",content:text});
+
+  try{
+    // Groq API - Free, no card needed
+    const groqMessages = [
+      { role: "system", content: buildPrompt() },
+      ...S.history.map(h => ({
+        role: h.role === "assistant" ? "assistant" : "user",
+        content: h.content
+      }))
+    ];
+    
+    const res = await fetch(PROXY_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-oss-120b",
+        messages: groqMessages,
+        max_tokens: 400,
+        temperature: 0.9
+      })
+    });
+    const data = await res.json();
+    
+    if (data.error) {
+      throw new Error(data.error.message || "Groq API error");
+    }
+    
+    const raw = data.choices?.[0]?.message?.content || "{}";
+    hideTyping();
+
+    let parsed;
+    try{parsed=JSON.parse(raw.replace(/```json|```/g,"").trim());}
+    catch{parsed={message:raw,actions:[],updateMemory:""};}
+
+    const actions=parsed.actions||[];
+    let fired=false;
+    actions.forEach((a,i)=>{
+      const uri=resolveURI(a);
+      if(uri){fired=true;setTimeout(()=>fireURI(uri),800+i*500);}
+    });
+
+    addMsg("ai",parsed.message||"...",actions,fired);
+    if(fired) showToast("⚡ Command executing...");
+
+    // Auto speak — always if mic triggered, else check setting
+    if(S.micTriggered||S.cfg.permissions.tts) speak(parsed.message||"");
+    S.micTriggered=false;
+
+    if(parsed.updateMemory?.trim()){ S.memory=[...S.memory.slice(-14),parsed.updateMemory.trim()]; persistMemory(); }
+    S.history.push({role:"assistant",content:JSON.stringify({message:parsed.message,actions,updateMemory:""})});
+    persistHistory();
+    if(S.history.length>20) S.history=S.history.slice(-20);
+
+  }catch(e){
+    hideTyping();
+    addErrorMsg("Network error: "+e.message,true);
+    S.micTriggered=false;
+  }
+}
+
+function retryLast(){ if(S.lastFailedMsg){ S.history.pop(); sendMsg(S.lastFailedMsg); } }
+
+// ── QUICK COMMANDS ────────────────────────────────────────────────────────────
+function quickCmd(text){ haptic(25); sendMsg(text); }
+
+// ── INPUT ─────────────────────────────────────────────────────────────────────
+function onInput(el){
+  el.style.height="auto"; el.style.height=Math.min(el.scrollHeight,80)+"px";
+  document.getElementById("send-btn").classList.toggle("active",el.value.trim().length>0);
+}
+function onKey(e){ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg();} }
+
+// ── MIC ───────────────────────────────────────────────────────────────────────
+let recog=null;
+function toggleMic(){
+  const btn=document.getElementById("mic-btn"),lbl=document.getElementById("mic-label"),wv=document.getElementById("waveform");
+  haptic(40);
+  if(!("webkitSpeechRecognition"in window||"SpeechRecognition"in window)){
+    addMsg("ai","Voice input ke liye Chrome browser use karein.");return;
+  }
+  if(S.listening){recog?.stop();S.listening=false;btn.classList.remove("listening");lbl.textContent="🎙️ Tap to speak";lbl.classList.remove("active");wv.classList.remove("show");return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR(); recog.continuous=false; recog.interimResults=false;
+  const lm={Urdu:"ur-PK",Sindhi:"sd-PK",Hindi:"hi-IN",Arabic:"ar-SA",English:"en-US"};
+  recog.lang=lm[S.cfg.language]||navigator.language||"en-US";
+  recog.onresult=e=>{ S.micTriggered=true; sendMsg(e.results[0][0].transcript); };
+  recog.onend=()=>{ S.listening=false;btn.classList.remove("listening");lbl.textContent="🎙️ Tap to speak";lbl.classList.remove("active");wv.classList.remove("show"); };
+  recog.onerror=e=>{ addMsg("ai","Mic error: "+e.error+". Chrome mein try karein.");S.listening=false;btn.classList.remove("listening");lbl.textContent="🎙️ Tap to speak";lbl.classList.remove("active");wv.classList.remove("show"); };
+  recog.start();
+  S.listening=true; btn.classList.add("listening");
+  lbl.textContent="🔴 Listening..."; lbl.classList.add("active");
+  wv.classList.add("show");
+}
+
+// ── CAMERA ────────────────────────────────────────────────────────────────────
+async function openCamera(){
+  if(!S.cfg.permissions.camera){addMsg("ai","Camera permission off hai. Settings mein enable karein.");return;}
+  haptic(30);
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:S.facingMode},audio:false});
+    S.camStream=stream;
+    document.getElementById("cam-video").srcObject=stream;
+    document.getElementById("cam-preview").classList.add("open");
+  }catch(e){addMsg("ai","Camera nahi khuli: "+e.message);}
+}
+function closeCamera(){S.camStream?.getTracks().forEach(t=>t.stop());S.camStream=null;document.getElementById("cam-preview").classList.remove("open");}
+async function flipCamera(){S.facingMode=S.facingMode==="environment"?"user":"environment";closeCamera();await openCamera();}
+function capturePhoto(){
+  const v=document.getElementById("cam-video"),c=document.createElement("canvas");
+  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d").drawImage(v,0,0);
+  S.pendingImage=c.toDataURL("image/jpeg",0.94);
+  closeCamera(); haptic(50); showToast("📸 Photo attached!");
+  showImageChip();
+  addMsg("ai","📸 Photo attach ho gayi! Ab is ke baare mein jo poochhna hai type/bol dein — main dekh kar batati hoon.");
+}
+function handleGalleryPick(e){
+  const file=e.target.files?.[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    S.pendingImage=reader.result;
+    haptic(40); showToast("🖼️ Tasveer attach ho gayi!");
+    showImageChip();
+  };
+  reader.readAsDataURL(file);
+  e.target.value="";
+}
+function showImageChip(){
+  let chip=document.getElementById("img-chip");
+  if(!chip){
+    chip=document.createElement("div");
+    chip.id="img-chip";
+    chip.innerHTML=`
+      <div id="img-chip-top">
+        <img id="img-chip-thumb" src="" alt=""/>
+        <span>📷 Photo attached</span>
+        <button onclick="clearImageChip()">✕</button>
+      </div>
+      <div id="img-chip-actions">
+        <button class="img-qa" onclick="sendImageQuick('🔤 Is tasveer mein jo bhi likha hai, wo hoobahoo (verbatim) nikaal kar do — poori text, formatting ke saath.')">🔤 Text نکالو (OCR)</button>
+        <button class="img-qa" onclick="sendImageQuick('Is tasveer mein kya hai? Tafseel se batayein — objects, log, jagah, sab kuch.')">🔍 پہچانو</button>
+        <button class="img-qa" onclick="sendImageQuick('Yeh ek document/screenshot hai. Iska mafhoom aur mukhtasir khulasa Roman Urdu mein samjhayein.')">📄 خلاصہ</button>
+      </div>`;
+    document.getElementById("footer").before(chip);
+  }
+  document.getElementById("img-chip-thumb").src=S.pendingImage;
+  chip.classList.add("show");
+}
+function sendImageQuick(prompt){ sendMsg(prompt); }
+function clearImageChip(){
+  S.pendingImage=null;
+  document.getElementById("img-chip")?.classList.remove("show");
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+function openSettings(){
+  haptic(20);
+  populateVoiceList();
+  document.getElementById("settings-panel").classList.add("open");
+}
+function populateVoiceList(){
+  const sel=document.getElementById("s-voice");
+  let voices=window.speechSynthesis?window.speechSynthesis.getVoices():[];
+  if(!voices.length){
+    // Voices load async on some Android browsers — retry shortly
+    setTimeout(populateVoiceList,300);
+    if(!sel.options.length) sel.innerHTML=`<option value="">آوازیں لوڈ ہو رہی ہیں...</option>`;
+    return;
+  }
+  const priority=["ur","hi","ar","en"];
+  voices=[...voices].sort((a,b)=>{
+    const pa=priority.indexOf(a.lang.split("-")[0]), pb=priority.indexOf(b.lang.split("-")[0]);
+    return (pa===-1?99:pa)-(pb===-1?99:pb);
+  });
+  sel.innerHTML=voices.map(v=>
+    `<option value="${v.voiceURI}"${v.voiceURI===S.cfg.voiceURI?" selected":""}>${v.name} (${v.lang})</option>`
+  ).join("");
+  if(!S.cfg.voiceURI && voices.length) sel.value=voices[0].voiceURI;
+}
+function testVoice(){
+  const sel=document.getElementById("s-voice");
+  const uri=sel.value;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(x=>x.voiceURI===uri);
+  const sample={ur:"السلام علیکم! میری آواز کیسی لگ رہی ہے؟",en:"Hello! How does my voice sound?"};
+  const isUrduish=v&&/^ur|^ar|^hi|^sd/.test(v.lang);
+  const u=new SpeechSynthesisUtterance(isUrduish?sample.ur:sample.en);
+  if(v) u.voice=v;
+  u.rate=0.88; u.pitch=1.05;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+  haptic(25);
+}
+function closeSettings(){ document.getElementById("settings-panel").classList.remove("open"); }
+function togglePerm(key){
+  S.cfg.permissions[key]=!S.cfg.permissions[key];
+  document.getElementById("p-"+key).classList.toggle("on",S.cfg.permissions[key]);
+  persistCfg();
+  haptic(20);
+}
+function saveSettings(){
+  S.cfg.assistantName=document.getElementById("s-name").value||"Arzu AI";
+  S.cfg.language=document.getElementById("s-lang").value;
+  S.cfg.voiceURI=document.getElementById("s-voice").value;
+  document.getElementById("header-name").textContent=S.cfg.assistantName;
+  persistCfg();
+  closeSettings(); showToast("✅ Settings saved!");
+  addMsg("ai",`Settings save ho gayi! Main ab ${S.cfg.assistantName} hoon۔ 🌟`);
+}
+
+// ── MEMORY ────────────────────────────────────────────────────────────────────
+function openMemory(){
+  haptic(20);
+  const list=document.getElementById("memory-list");
+  list.innerHTML=S.memory.length
+    ?S.memory.map((m,i)=>`<div class="memory-item"><span class="memory-num">#${i+1} </span>${m}</div>`).join("")
+    :`<div style="color:rgba(255,255,255,0.22);text-align:center;margin-top:40px;font-size:13px;">No memory saved yet.<br/>Chat karo to memory save hogi!</div>`;
+  document.getElementById("memory-panel").classList.add("open");
+}
+function closeMemory(){ document.getElementById("memory-panel").classList.remove("open"); }
+function clearMemory(){ S.memory=[];persistMemory();closeMemory();showToast("Memory cleared");addMsg("ai","Memory clear ho gayi! Fresh start. ✨"); }
+
+// ── EXPORT CHAT ───────────────────────────────────────────────────────────────
+function exportChat(){
+  const msgs=document.querySelectorAll(".bubble");
+  let txt=`Arzu AI — Chat Export\nby Babu Mallah\n${"─".repeat(30)}\n\n`;
+  msgs.forEach(b=>{
+    const role=b.classList.contains("user")?"You":"Arzu AI";
+    txt+=`[${role}]\n${b.innerText}\n\n`;
+  });
+  const blob=new Blob([txt],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`auroza-chat-${Date.now()}.txt`;
+  a.click();
+  showToast("📤 Chat exported!");
+  haptic(40);
+}
+
+// ── CLEAR CHAT ────────────────────────────────────────────────────────────────
+function clearChat(){
+  haptic(30);
+  document.getElementById("messages").innerHTML="";S.history=[];S.chatLog=[];
+  persistHistory(); persistChat();
+  addMsg("ai",`${S.cfg.assistantName} taiyaar hai! Kya madad karoon؟ 🚀`);
+}
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function toggleTheme(){
+  S.darkMode=!S.darkMode;
+  document.body.classList.toggle("light",!S.darkMode);
+  document.getElementById("theme-btn").textContent=S.darkMode?"🌙":"☀️";
+  persistTheme();
+  haptic(25);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+loadPersistedState();
+document.body.classList.toggle("light",!S.darkMode);
+document.getElementById("theme-btn").textContent=S.darkMode?"🌙":"☀️";
+document.getElementById("header-name").textContent=S.cfg.assistantName;
+
+if(window.speechSynthesis){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+}
+
+// Register service worker for PWA install capability
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+// Splash screen
+setTimeout(()=>{
+  const splash=document.getElementById("splash");
+  splash.classList.add("hide");
+  setTimeout(()=>splash.remove(),600);
+}, 2400);
+
+// Restore previous chat, or greet for the first time
+setTimeout(()=>{
+  const hadHistory=restoreChatUI();
+  if(!hadHistory){
+    addMsg("ai","السلام علیکم! 😊 میں Arzu AI ہوں — آپ کی دوست، آپ کی ساتھی۔ بتائیے، میں آپ کی کیا مدد کر سکتی ہوں؟ 🌟");
+  }
+}, 2600);
+</script>
+</body>
+</html>
