@@ -14,7 +14,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'Space Grotesk','Segoe UI',sans-serif;background:linear-gradient(160deg,#1C1410 0%,#120E0B 50%,#0E0B08 100%);min-height:100vh;display:flex;flex-direction:column;transition:background 0.4s;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Space Grotesk','Segoe UI',sans-serif;background:linear-gradient(160deg,#1C1410 0%,#120E0B 50%,#0E0B08 100%);height:100vh;height:100dvh;display:flex;flex-direction:column;transition:background 0.4s;overflow:hidden;}
 body.light{background:linear-gradient(160deg,#EDE0C4 0%,#F3ECDA 50%,#FAF6EC 100%);}
 
 ::-webkit-scrollbar{width:3px;}
@@ -1125,12 +1126,14 @@ setTimeout(()=>{
   setTimeout(()=>splash.remove(),600);
 }, 2400);
 
-// Restore previous chat, or greet for the first time
+// Every fresh app open starts a NEW chat. The previous conversation was already
+// auto-saved into session history each time a message was sent, so nothing is lost —
+// it's just accessible via the 🕘 History panel instead of auto-resuming.
 setTimeout(()=>{
-  const hadHistory=restoreChatUI();
-  if(!hadHistory){
-    addMsg("ai","السلام علیکم! 😊 میں Arzu AI ہوں — آپ کی دوست، آپ کی ساتھی۔ بتائیے، میں آپ کی کیا مدد کر سکتی ہوں؟ 🌟");
-  }
+  if(S.chatLog.length){ upsertCurrentSession(); }
+  S.chatLog=[]; S.history=[]; S.currentSessionId=null;
+  safeLSSet(LS_KEYS.chat, []); persistHistory(); safeLSSet(LS_KEYS.currentSession, null);
+  addMsg("ai","السلام علیکم! 😊 میں Arzu AI ہوں — آپ کی دوست، آپ کی ساتھی۔ بتائیے، میں آپ کی کیا مدد کر سکتی ہوں؟ 🌟");
 }, 2600);
 </script>
 </body>
