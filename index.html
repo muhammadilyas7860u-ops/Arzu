@@ -201,23 +201,20 @@ select.field-input{background:rgba(18,14,11,0.95);}
 body.light select.field-input{background:white;}
 .hint{font-size:11px;color:rgba(232,198,115,0.5);margin-top:5px;}
 .voice-test-btn{margin-top:7px;width:100%;padding:9px;border-radius:10px;border:1px solid rgba(201,162,76,0.32);background:rgba(201,162,76,0.1);color:#E8C673;font-size:12.5px;font-family:inherit;cursor:pointer;}
-
-<!-- Arzu Quick Actions -->
-<div id="header-btns" style="display: flex; gap: 10px; margin-top: 10px;">
-    <button class="hbtn" onclick="window.open('https://facebook.com', '_blank')" title="Facebook">📘</button>
-    <button class="hbtn" onclick="window.open('https://wa.me/', '_blank')" title="WhatsApp">💬</button>
-    <button class="hbtn" onclick="window.open('https://youtube.com', '_blank')" title="YouTube">📺</button>
-    <button class="hbtn" onclick="location.reload()" title="Refresh">🔄</button>
-</div>
-
-<!-- Arzu System Script -->
-<script>
-    // Arzu Personality System
-    const myraPersona = "تم 'Arzu' ہو۔ تم ایک لاڈلی، جذباتی اور اسمارٹ AI اسسٹنٹ ہو۔ ہر جواب میں اپنی شخصیت کا اظہار کرو۔ اگر کوئی کام مشکل ہو تو اسے پیارے سے نخرے کے ساتھ کرو، لیکن اسے مکمل کرنے میں کوتاہی نہ کرو۔ ہمیشہ صارف کو پیار سے مخاطب کرو۔";
-    
-    console.log("Arzu is ready to serve you with style!");
-</script>
-  
+.voice-test-btn:active{transform:scale(0.97);}
+body.light .hint{color:rgba(201,162,76,0.5);}
+.perm-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:12px;padding:11px 13px;border:1px solid rgba(255,255,255,0.07);}
+body.light .perm-row{background:white;border-color:rgba(176,141,62,0.1);box-shadow:0 1px 4px rgba(176,141,62,0.05);}
+.perm-label{color:#cbd5e1;font-size:13px;}
+body.light .perm-label{color:#3A2E22;}
+.toggle{width:44px;height:25px;border-radius:13px;border:none;cursor:pointer;background:rgba(255,255,255,0.1);position:relative;transition:background 0.3s;flex-shrink:0;}
+.toggle.on{background:linear-gradient(135deg,#1F6B57,#C9A24C);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:white;transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.25);}
+.toggle.on .toggle-knob{left:22px;}
+.save-btn{padding:13px;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(135deg,#1F6B57,#C9A24C);color:white;font-weight:700;font-size:15px;font-family:inherit;box-shadow:0 4px 20px rgba(31,107,87,0.32);transition:transform 0.2s;}
+.save-btn:active{transform:scale(0.97);}
+.section-label{color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 0;}
+body.light .section-label{color:rgba(176,141,62,0.35);}
 
 /* Memory */
 #memory-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;margin-top:10px;}
@@ -292,7 +289,6 @@ body.light .history-item-title{color:#1e1b4b;}
     <div id="header-sub"><span class="online-dot"></span> Online • by Babu Mallah</div>
   </div>
   <div id="header-btns">
-    <button class="hbtn" onclick="openVideoStudio()" title="Video Studio">🎬</button>
     <button class="hbtn" onclick="openHistory()" title="Chat History">🕘</button>
     <button class="hbtn" onclick="toggleTheme()" id="theme-btn" title="Theme">🌙</button>
     <button class="hbtn" onclick="openMemory()" title="Memory">🧠</button>
@@ -454,27 +450,6 @@ body.light .history-item-title{color:#1e1b4b;}
   <div id="vm-status">Tap the mic to start talking</div>
   <div id="vm-transcript"></div>
   <button id="vm-mic-btn" onclick="vmToggleListen()">🎙️</button>
-</div>
-
-<!-- VIDEO STUDIO -->
-<div class="panel" id="video-studio-panel">
-  <div class="panel-header">
-    <button class="back-btn" onclick="closeVideoStudio()">←</button>
-    <span class="panel-title">🎬 Video Studio</span>
-  </div>
-  <div style="padding:0 18px;flex:1;display:flex;flex-direction:column;min-height:0;overflow-y:auto;">
-    <div id="vs-quota-badge">🎁 Roz 3 mufat videos</div>
-    <div id="vs-upload-box" onclick="document.getElementById('vs-image-input').click()">
-      <img id="vs-preview-img" style="display:none;"/>
-      <span id="vs-upload-label">📷 Tasveer chunein (optional)</span>
-    </div>
-    <input type="file" id="vs-image-input" accept="image/*" style="display:none" onchange="vsHandleImage(event)"/>
-    <span class="field-label" style="margin-top:14px;">Video ka description</span>
-    <textarea class="field-input" id="vs-prompt" rows="3" placeholder="Jaise: 'Ek billi baarish mein khel rahi hai, cinematic style'"></textarea>
-    <button class="save-btn" onclick="vsGenerate()" style="margin-top:14px;">🎬 Video Banayein</button>
-    <div id="vs-result"></div>
-    <div class="hint" style="margin-top:14px;">⚡ Yeh feature abhi taiyari mein hai — video engine jald active hoga. UI aur quota system test karne ke liye available hai.</div>
-  </div>
 </div>
 
 <!-- TOAST -->
@@ -678,6 +653,8 @@ PERSONALITY: You have a warm, playful, expressive personality — not a flat cor
 CAPABILITIES: You are versatile — help confidently with coding/debugging, writing, research-style questions, math/reasoning, daily-life tasks, and general knowledge. Don't limit yourself to just chit-chat.
 
 RELIABILITY: If you genuinely don't know something or aren't sure, say so honestly instead of guessing confidently — then offer to help find the answer another way. Never invent facts, links, or numbers.
+
+SCOPE & TRANSPARENCY: Your real, active capabilities are: chat conversation, web navigation via deep links (open_app, search_web, play_youtube, etc.), and coding/technical help. You do NOT currently have video/image generation or e-commerce payment processing. If a user asks for these, don't pretend to do it or claim you're "working on it" — say plainly: "Main abhi chat, web navigation, aur technical madad tak mehdood hoon. Advanced media features future updates mein aayenge." Never behave deceptively about what you can or can't actually do.
 
 PERSONALIZATION: If the user calls you by a nickname or a different name mid-conversation, go with it warmly for that conversation instead of correcting them — your official name stays "${c.assistantName}" in settings, but you're relaxed about what they call you casually.
 
@@ -899,56 +876,6 @@ async function vmSendMessage(text){
     document.getElementById("vm-status").textContent="Bol rahi hoon...";
   }
 }
-// ── VIDEO STUDIO (image/text-to-video with daily free quota) ───────────────
-S.vsImageData=null;
-function openVideoStudio(){
-  haptic(20);
-  document.getElementById("video-studio-panel").classList.add("open");
-  vsRefreshQuotaBadge();
-}
-function closeVideoStudio(){ document.getElementById("video-studio-panel").classList.remove("open"); }
-function vsHandleImage(e){
-  const file=e.target.files?.[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-    S.vsImageData=reader.result;
-    const img=document.getElementById("vs-preview-img");
-    img.src=S.vsImageData; img.style.display="block";
-    document.getElementById("vs-upload-label").textContent="✅ Tasveer lag gayi (badalne ke liye tap karein)";
-  };
-  reader.readAsDataURL(file);
-}
-async function vsCheckQuota(){
-  try{
-    const res=await fetch(PROXY_BASE_URL+"/video-quota",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({deviceId:S.deviceId})
-    });
-    return await res.json();
-  }catch(e){
-    return {allowed:false, reason:"Network error — dobara try karein."};
-  }
-}
-async function vsRefreshQuotaBadge(){
-  document.getElementById("vs-quota-badge").textContent="🎁 Roz 3 mufat videos";
-}
-async function vsGenerate(){
-  const prompt=document.getElementById("vs-prompt").value.trim();
-  if(!prompt && !S.vsImageData){ showToast("⚠️ Description ya tasveer dein"); return; }
-  haptic(30);
-  const resultBox=document.getElementById("vs-result");
-  resultBox.innerHTML=`<div class="vs-result-box">⏳ Quota check ho rahi hai...</div>`;
-
-  const quota=await vsCheckQuota();
-  if(!quota.allowed){
-    resultBox.innerHTML=`<div class="vs-result-box">🚫 ${quota.reason||"Aaj ke free videos khatam ho gaye."}<br><br>Zyada videos ke liye subscription jald available hogi.</div>`;
-    return;
-  }
-
-  resultBox.innerHTML=`<div class="vs-result-box">✅ Quota mil gaya! (${quota.remaining} aur bachi hain aaj)<br><br>🎬 Video engine abhi taiyari mein hai — jald hi yahan asli AI video ban kar aayegi. Baaki UI aur roz ki limit poori tarah kaam kar rahi hai.</div>`;
-}
-
 // ── SCREEN SHARE (best-effort — most mobile browsers don't support this reliably) ──
 async function startScreenShare(){
   haptic(25);
