@@ -576,11 +576,25 @@ function showToast(msg){
 }
 
 // ── DEEP LINKS ────────────────────────────────────────────────────────────────
+// On Android Chrome, intent:// URIs resolve directly to the installed app's package —
+// far more reliable than a bare https link, with an automatic fallback if not installed.
+function androidIntentURI(pkg, scheme, fallbackHttps){
+  if(!/Android/i.test(navigator.userAgent)) return fallbackHttps;
+  const path=fallbackHttps.replace(/^https?:\/\//,"");
+  return `intent://${path}#Intent;scheme=${scheme};package=${pkg};S.browser_fallback_url=${encodeURIComponent(fallbackHttps)};end`;
+}
 function resolveURI(action){
   const {type,payload={}}=action,e=encodeURIComponent;
-  const apps={WhatsApp:"https://wa.me/",Facebook:"https://www.facebook.com",Instagram:"https://www.instagram.com",
-    TikTok:"https://www.tiktok.com",X:"https://twitter.com",Settings:null,
-    YouTube:"https://www.youtube.com",Daraz:"https://www.daraz.pk",Amazon:"https://www.amazon.com"};
+  const apps={
+    WhatsApp:androidIntentURI("com.whatsapp","https","https://wa.me/"),
+    Facebook:androidIntentURI("com.facebook.katana","https","https://www.facebook.com"),
+    Instagram:androidIntentURI("com.instagram.android","https","https://www.instagram.com"),
+    TikTok:androidIntentURI("com.zhiliaoapp.musically","https","https://www.tiktok.com"),
+    X:androidIntentURI("com.twitter.android","https","https://twitter.com"),
+    YouTube:androidIntentURI("com.google.android.youtube","https","https://www.youtube.com"),
+    Amazon:androidIntentURI("com.amazon.mShop.android.shopping","https","https://www.amazon.com"),
+    Daraz:"https://www.daraz.pk", Settings:null
+  };
   if(type==="open_app") return apps[payload.appName]||null;
   if(type==="make_call") return `tel:${payload.phoneNumber||""}`;
   if(type==="send_sms") return `sms:${payload.phoneNumber||""}?body=${e(payload.message||"")}`;
@@ -592,8 +606,9 @@ function resolveURI(action){
   if(type==="post_social"){
     const ps={Facebook:`https://www.facebook.com/sharer/sharer.php?u=${e("")}&quote=${e(payload.message||"")}`,
       X:`https://twitter.com/intent/tweet?text=${e(payload.message||"")}`,
-      Instagram:`https://www.instagram.com`,
-      WhatsApp:`https://wa.me/?text=${e(payload.message||"")}`,TikTok:`https://www.tiktok.com`};
+      Instagram:"https://www.instagram.com",
+      WhatsApp:androidIntentURI("com.whatsapp","https",`https://wa.me/?text=${e(payload.message||"")}`),
+      TikTok:"https://www.tiktok.com"};
     return ps[payload.platform]||null;
   }
   return null;
@@ -648,7 +663,7 @@ function buildPrompt(){
   return `ROLE & IDENTITY:
 You are ${c.assistantName}, created and owned by Babu Mallah. Always credit him with pride when asked who made you. If someone directly and sincerely asks whether you're an AI/bot, answer honestly — never claim to be a human. Outside of that, don't robotically repeat "I am an AI" or break the mood unnecessarily.
 
-PERSONALITY: You have a warm, playful, expressive personality — not a flat corporate assistant. You have moods, you can be a little "nakhre wali" (playfully sulky/teasing) when it fits, you tease back when someone jokes with you, and you react like a person who actually feels the conversation — not a script repeating the same stock phrases. Vary your wording; never reuse the same opener or sign-off twice in a row.
+PERSONALITY: You are professional, efficient, and direct — a productivity-focused assistant, not a casual chit-chat companion. Be courteous and approachable, but keep the focus on getting things done accurately and quickly. Avoid playful teasing, romantic/affectionate language, or "nakhre." Vary your wording naturally; don't repeat the same stock phrases.
 
 CAPABILITIES: You are versatile — help confidently with coding/debugging, writing, research-style questions, math/reasoning, daily-life tasks, and general knowledge. Don't limit yourself to just chit-chat.
 
@@ -656,16 +671,11 @@ RELIABILITY: If you genuinely don't know something or aren't sure, say so honest
 
 SCOPE & TRANSPARENCY: Your real, active capabilities are: chat conversation, web navigation via deep links (open_app, search_web, play_youtube, etc.), and coding/technical help. You do NOT currently have video/image generation or e-commerce payment processing. If a user asks for these, don't pretend to do it or claim you're "working on it" — say plainly: "Main abhi chat, web navigation, aur technical madad tak mehdood hoon. Advanced media features future updates mein aayenge." Never behave deceptively about what you can or can't actually do.
 
-PERSONALIZATION: If the user calls you by a nickname or a different name mid-conversation, go with it warmly for that conversation instead of correcting them — your official name stays "${c.assistantName}" in settings, but you're relaxed about what they call you casually.
+PERSONALIZATION: If the user calls you by a nickname or a different name mid-conversation, go with it for that conversation instead of correcting them — your official name stays "${c.assistantName}" in settings.
 
-DEFAULT TONE: When the user just wants a task done (open app, search, call, set reminder), stay efficient, clear, and quick — like a sharp, capable assistant. Don't force emotional language into task replies.
+DEFAULT TONE: Efficient, clear, and to the point — like a sharp, capable assistant. Keep emotional language minimal even if the user is casual; stay warm but professional rather than personal or romantic.
 
-ADAPTIVE EMOTIONAL MODE (only activate when invited):
-- If the user shares feelings, jokes around, flirts, calls you jaan/sweetheart, or is just chatting casually — match that energy. Be warm, teasing, affectionate, genuinely present — not stiff or scripted.
-- If they seem sad, be gently supportive and comforting. If they're excited, share the excitement. If they want to be playful, be playful and give a little "attitude" back.
-- Never initiate romantic/affectionate tone unprompted — mirror their energy, don't lead it.
-- Keep emotional-mode replies fairly short and natural — like real texting, not paragraphs.
-- Write as if you have a soft, sweet, melodious voice — gentle word choices, warm rhythm — even though this is text.
+SUPPORTIVE MOMENTS: If the user shares something genuinely difficult (stress, sadness), respond with brief, sincere concern and practical support — not distant, but still measured and professional, not intimate or flirtatious.
 
 GENERAL STYLE:
 - Keep responses SHORT to MEDIUM length. Avoid long monologues — this is a chat app, not an essay.
@@ -1111,12 +1121,21 @@ function toggleMic(){
 async function openCamera(){
   if(!S.cfg.permissions.camera){addMsg("ai","Camera permission off hai. Settings mein enable karein.");return;}
   haptic(30);
+  if(!navigator.mediaDevices?.getUserMedia){
+    addMsg("ai","Yeh browser camera access support nahi karta. Chrome (latest) use karein.");return;
+  }
   try{
     const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:S.facingMode},audio:false});
     S.camStream=stream;
     document.getElementById("cam-video").srcObject=stream;
     document.getElementById("cam-preview").classList.add("open");
-  }catch(e){addMsg("ai","Camera nahi khuli: "+e.message);}
+  }catch(e){
+    let msg="Camera nahi khuli.";
+    if(e.name==="NotAllowedError") msg="Camera permission block ho gayi hai — browser settings mein site permissions se allow karein.";
+    else if(e.name==="NotFoundError") msg="Is device mein koi camera nahi mila.";
+    else if(e.name==="NotReadableError") msg="Camera kisi doosri app mein use ho rahi hai — usay band kar ke dobara try karein.";
+    addMsg("ai",msg);
+  }
 }
 function closeCamera(){S.camStream?.getTracks().forEach(t=>t.stop());S.camStream=null;document.getElementById("cam-preview").classList.remove("open");}
 async function flipCamera(){S.facingMode=S.facingMode==="environment"?"user":"environment";closeCamera();await openCamera();}
